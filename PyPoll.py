@@ -33,28 +33,37 @@ with open(file_to_load) as election_data:
 
         # track the candidate's vote count
         candidate_votes[candidate_name] += 1
-        
-for candidate_name in candidate_options:
-    votes = candidate_votes[candidate_name]
-    vote_percentage = float(votes)/float(total_votes) * 100
-       
-    if votes > winning_count and vote_percentage > winning_percentage:
-        winning_candidate = candidate_name
-        winning_count = votes
-        winning_percentage = vote_percentage
 
-    print(f"{candidate_name}: {vote_percentage:.1f}% ({votes})")
+# Open the output file to write data to the file.
+with open(file_to_save, 'w') as txt_file:
+    # write the total votes
+    election_results = (
+        f"Election Results\n"
+    f"----------------------------------\n"
+    f"Total votes: {total_votes:,}\n"
+    f"----------------------------------\n"
+    )
+    txt_file.write(election_results)
 
-winning_candidate_summary = (
-        f"----------------------------------\n"
-        f"Winner: {winning_candidate}\n"
-        f"Winning vote count: {winning_count:,}\n"
-        f"Winning percentage: {winning_percentage:.1f}%\n"
-        f"------------------------------------")
-print(winning_candidate_summary)
-# # Open the output file to write data to the file.
-# with open(file_to_save, 'w') as txt_file:
-#     #write data to output file
-#     txt_file.write("Counties in the election\n")
-#     txt_file.write("------------------------\n")
-#     txt_file.write("Arapahoe\nDenver\nJefferson")
+    # calculate and write number % percentages of votes for each candidate
+    for candidate_name in candidate_votes:
+        votes = candidate_votes[candidate_name]
+        vote_percentage = float(votes)/float(total_votes) * 100
+        candidate_results = (f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+        txt_file.write(candidate_results)
+
+        # determine the winner
+        if votes > winning_count and vote_percentage > winning_percentage:
+            winning_candidate = candidate_name
+            winning_count = votes
+            winning_percentage = vote_percentage   
+            
+    # write the winner
+    winning_candidate_summary = (    
+            f"---------------------------\n"    
+            f"Winner: {winning_candidate}\n"
+            f"Winning vote count: {winning_count:,}\n"
+            f"Winning percentage: {winning_percentage:.1f}%\n"
+            f"------------------------------------")
+    txt_file.write(winning_candidate_summary)
+
